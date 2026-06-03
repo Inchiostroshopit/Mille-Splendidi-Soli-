@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capolavoro — Mille Splendidi Soli & Fable</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Karla:wght@300;400;500&family=Playfair+Display:ital,wght@1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #110d0a;
+    --cream: #f6f1e9;
+    --dust: #eae1d4;
+    --saffron: #c67a2b;
+    --pomegranate: #82202f;
+    --lapis: #233d5a;
+    --sage: #5e6f52;
+    --gold: #b08d22;
+    --shadow: rgba(17, 13, 10, 0.08);
+    --transition-smooth: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Karla', sans-serif;
+    font-weight: 300;
+    line-height: 1.9;
+    font-size: 16px;
+    overflow-x: hidden;
+  }
+
+  /* ---- READING PROGRESS ---- */
+  #progress-bar {
+    position: fixed;
+    top: 0; left: 0; width: 0%; height: 4px;
+    background: linear-gradient(90deg, var(--saffron), var(--pomegranate), var(--gold));
+    z-index: 1000;
+    transition: width 0.1s ease-out;
+  }
+
+  /* ---- GRAIN ARCHITECTURE ---- */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ---- HERO LANDING (3D SPLIT) ---- */
+  .cover {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    position: relative;
+    background: var(--ink);
+    color: var(--cream);
+    overflow: hidden;
+  }
+
+  .cover-left {
+    padding: 4rem 5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    z-index: 5;
+  }
+
+  .cover-right {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 50% 50%, #2a150c 0%, #110d0a 80%);
+    perspective: 1500px;
+    padding: 2rem;
+    border-left: 1px solid rgba(200,131,58,0.15);
+  }
+
+  .cover-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--saffron);
+  }
+
+  .cover-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.8rem, 5vw, 4.8rem);
+    font-weight: 300;
+    line-height: 1.1;
+    margin: 2rem 0;
+  }
+
+  .cover-title em {
+    font-style: italic;
+    color: var(--saffron);
+    display: block;
+  }
+
+  .cover-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-style: italic;
+    color: rgba(245,240,232,0.6);
+    max-width: 540px;
+    margin-bottom: 3rem;
+  }
+
+  /* ---- INTERACTIVE 3D BOOK ---- */
+  .book-container {
+    width: 280px;
+    height: 410px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+  }
+
+  .book-cover {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #701c29 0%, #441018 100%);
+    border-radius: 2px 5px 5px 2px;
+    transform-style: preserve-3d;
+    transform: translateZ(25px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2.5rem 2rem;
+    border-left: 4px solid var(--saffron);
+  }
+
+  .book-spine {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 50px;
+    background: #320a10;
+    transform: rotateY(-90deg) translateZ(25px);
+    transform-origin: left;
+  }
+
+  .book-pages {
+    position: absolute;
+    right: 4px; top: 5px; bottom: 5px;
+    width: 270px;
+    background: #eae3d5;
+    transform: translateZ(5px);
+    border-radius: 0 3px 3px 0;
+    box-shadow: inset -10px 0 20px rgba(0,0,0,0.1);
+  }
+
+  .book-cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,0.06) 0%, transparent 5%, transparent 95%, rgba(0,0,0,0.25) 100%);
+  }
+
+  /* ---- STICKY STYLISH TOPO NAVIGATION ---- */
+  .toc {
+    background: rgba(246, 241, 233, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(17,13,10,0.08);
+    padding: 1.5rem 5rem;
+    display: flex;
+    gap: 3.5rem;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .toc-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--saffron);
+    font-weight: 500;
+  }
+
+  .toc a {
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    opacity: 0.4;
+    transition: var(--transition-smooth);
+    position: relative;
+  }
+
+  .toc a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0; width: 0; height: 1px;
+    background: var(--pomegranate);
+    transition: var(--transition-smooth);
+  }
+
+  .toc a:hover { opacity: 1; }
+  .toc a:hover::after { width: 100%; }
+
+  /* ---- EDITORIAL DUAL COLUMN SECTIONS ---- */
+  section {
+    padding: 9rem 5rem;
+    max-width: 1300px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 5rem;
+  }
+
+  .section-sidebar {
+    position: sticky;
+    top: 8rem;
+    height: fit-content;
+  }
+
+  .section-number {
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--saffron);
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 3.8vw, 3.4rem);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+  }
+
+  .section-subtitle {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--lapis);
+    opacity: 0.85;
+    line-height: 1.6;
+  }
+
+  /* ---- SCROLL REVEAL ANIMATIONS ---- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: var(--transition-smooth);
+  }
+
+  .reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .prose {
+    font-size: 1.08rem;
+    color: rgba(17,13,10,0.85);
+    margin-bottom: 2.2rem;
+    text-align: justify;
+  }
+
+  .prose strong { font-weight: 500; color: var(--ink); }
+
+  /* ---- ELEGANT CONTENT CARDS ---- */
+  .highlight-block {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 4rem;
+    margin: 4rem 0;
+    position: relative;
+    border-radius: 4px;
+    box-shadow: 0 20px 40px var(--shadow);
+  }
+
+  .highlight-block p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.45rem;
+    font-style: italic;
+    line-height: 1.7;
+  }
+
+  .highlight-block .attr {
+    margin-top: 2rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--saffron);
+  }
+
+  .motif-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: rgba(17,13,10,0.1);
+    margin: 4rem 0;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 15px 30px var(--shadow);
+  }
+
+  .motif-card {
+    background: var(--cream);
+    padding: 3rem 2rem;
+    transition: var(--transition-smooth);
+  }
+
+  .motif-card:hover {
+    background: var(--dust);
+    transform: translateY(-5px);
+  }
+
+  .motif-icon { font-size: 2.5rem; margin-bottom: 1.5rem; display: block; }
+  .motif-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; margin-bottom: 1rem; }
+  .motif-body { font-size: 0.9rem; rgba(17,13,10,0.75); }
+
+  /* ---- CONNECTIONS ROW PANEL ---- */
+  .connection-item {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 3rem;
+    padding: 3.5rem 0;
+    border-bottom: 1px solid rgba(17,13,10,0.08);
+  }
+
+  .connection-icon {
+    width: 100px; height: 100px;
+    border: 1px solid rgba(17,13,10,0.12);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.2rem; background: var(--dust);
+  }
+
+  /* ---- TRANSITION HOVER EFFECTS ---- */
+  .quote-card {
+    border: 1px solid rgba(17,13,10,0.1);
+    background: rgba(255,255,255,0.3);
+    padding: 3rem;
+    margin-bottom: 3rem;
+    border-radius: 4px;
+    transition: var(--transition-smooth);
+  }
+  .quote-card:hover {
+    border-color: var(--pomegranate);
+    background: var(--cream);
+    box-shadow: 0 20px 40px var(--shadow);
+    transform: scale(1.01);
+  }
+
+  .quote-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    font-style: italic;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .quote-analysis {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    border-top: 1px solid rgba(17,13,10,0.08);
+    padding-top: 2rem;
+  }
+
+  .analysis-col h4 {
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--pomegranate);
+    margin-bottom: 0.8rem;
+  }
+
+  .analysis-col p { font-size: 0.9rem; color: rgba(17,13,10,0.75); }
+
+  /* ---- COLOPHON FOOTER ---- */
+  .colophon {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 6rem 5rem;
+  }
+
+  .colophon-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: end;
+  }
+
+  .colophon-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-style: italic;
+    color: var(--saffron);
+    margin-bottom: 1.5rem;
+  }
+
+  /* ---- RESPONSIVE MEDIA QUERIES ---- */
+  @media (max-width: 1024px) {
+    .cover { grid-template-columns: 1fr; }
+    .cover-right { display: none; }
+    section { grid-template-columns: 1fr; gap: 2rem; padding: 5rem 2rem; }
+    .section-sidebar { position: static; }
+    .toc { padding: 1.5rem 2rem; overflow-x: auto; white-space: nowrap; }
+    .motif-grid { grid-template-columns: 1fr; }
+    .quote-analysis { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- ======================== LUXURY COVER ======================== -->
+<div class="cover">
+  <div class="cover-left">
+    <span class="cover-label">Capolavoro — Matrice Accademica Universitaria</span>
+    <div>
+      <p style="font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--saffron); margin-bottom: 1rem;">Tesi Sperimentale Multi-Esistenziale</p>
+      <h1 class="cover-title">Mille Splendidi Soli <em>nell'Agorà Digitale</em></h1>
+      <p class="cover-subtitle">Strutturazione critica dell'opera di Khaled Hosseini mediata dall'intelligenza connettiva e dall'ecosistema letterario Fable.</p>
+    </div>
+    <div style="display: flex; gap: 4rem;">
+      <div>
+        <p style="font-size: 0.58rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--saffron);">Autori & Sviluppo</p>
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; opacity: 0.8;">Lusi Mumladze & Antonio It Zanon Udine</p>
+      </div>
+      <div>
+        <p style="font-size: 0.58rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--saffron);">Corso Di Riferimento</p>
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; opacity: 0.8;">Sociologia delle Piattaforme Digitali</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="cover-right">
+    <!-- 3D Tracked Book Scene -->
+    <div class="book-container" id="interactive-book">
+      <div class="book-spine"></div>
+      <div class="book-cover">
+        <span style="font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold);">K. HOSSEINI</span>
+        <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; line-height: 1.1; color: var(--cream);">Mille<br>Splendidi<br>Soli</h2>
+        <span style="font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--saffron); text-align: right;">EDIZIONE CRITICA</span>
+      </div>
+      <div class="book-pages"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== TOPO NAVIGATION ======================== -->
+<nav class="toc">
+  <span class="toc-label">Capitoli Editorial →</span>
+  <a href="#parte1">I. L'Agorà Digitale</a>
+  <a href="#parte2">II. Anatomia Strutturale</a>
+  <a href="#parte3">III. Curation & Echi</a>
+  <a href="#parte4">IV. Contaminazioni Colte</a>
+</nav>
+
+<!-- ======================== PARTE I ======================== -->
+<section id="parte1">
+  <div class="section-sidebar">
+    <span class="section-number">Capitolo I</span>
+    <h2 class="section-title">L'Agorà<br>Digitale</h2>
+    <p class="section-subtitle">Fable come architettura ingegneristica dell'empatia di massa.</p>
+  </div>
+  <div class="reveal">
+    <p class="prose">
+      Leggere <em>Mille Splendidi Soli</em> in solitudine costituisce già un trauma controllato: ci si lascia intenzionalmente disarmare dalla prosa di Hosseini. Tuttavia, l'esperienza di fruizione testuale all'interno del micro-universo digitale di <strong>Fable</strong> tramuta il consumo passivo in una performance antropologica e corale.
+    </p>
+    <p class="prose">
+      L'applicazione cessa di essere mero contenitore asettico per configurarsi come una vera e propria <strong>architettura dell'empatia</strong>. Gli strumenti di annotazione condivisa e i tracciamenti dei nodi emotivi attivano dinamiche sistemiche affini al concetto di <em>intelligenza collettiva</em> teorizzato da Pierre Lévy.
+    </p>
+    <div class="highlight-block">
+      <p>«La piattaforma non connette semplicemente dispositivi remoti; interconnette le risonanze traumatiche intime dei lettori, creando un archivio polifonico vivente.»</p>
+      <p class="attr">— Postfazione ermeneutica sul Social Reading</p>
+    </div>
+    <p class="prose">
+      I <strong>milestone discussions</strong> operano come interruttori temporali sincroni: arrestano la lettura comunitaria davanti al dramma, imponendo uno spazio catartico di elaborazione del lutto letterario che si fa immediatamente politico e transnazionale.
+    </p>
+  </div>
+</section>
+
+<!-- ======================== PARTE II ======================== -->
+<section id="parte2">
+  <div class="section-sidebar">
+    <span class="section-number">Capitolo II</span>
+    <h2 class="section-title">Anatomia<br>Strutturale</h2>
+    <p class="section-subtitle">Micro-storie di oppressione e i motivi simbolici del testo.</p>
+  </div>
+  <div class="reveal">
+    <p class="prose">
+      L'opera analizzata non si limita alla cronaca drammatica, ma rivela un impianto a geometrie binarie in cui le parabole esistenziali di Mariam e Laila riflettono la <strong>violenza strutturale</strong> sistemica teorizzata da Johan Galtung.
+    </p>
+    
+    <div class="motif-grid">
+      <div class="motif-card">
+        <span class="motif-icon">🧕</span>
+        <h3 class="motif-title">Il Burqa</h3>
+        <p class="motif-body">Visto non solo come indumento coercitivo, ma come barriera psichica e scudo paradossale contro lo sguardo violento del regime panottico maschile.</p>
+      </div>
+      <div class="motif-card">
+        <span class="motif-icon">🍂</span>
+        <h3 class="motif-title">I Cicli di Kabul</h3>
+        <p class="motif-body">Le variazioni climatiche della capitale afghana ritmano l'avvicendarsi geopolitico dei regimi, parallelamente al decadimento biologico dei corpi.</p>
+      </div>
+      <div class="motif-card">
+        <span class="motif-icon">☀️</span>
+        <h3 class="motif-title">Soli Splendidi</h3>
+        <p class="motif-body">Metafora ultima dell'indomita resistenza ontologica femminile, nascosta dietro i muri impenetrabili della violenza domestica patriarcale.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== PARTE III ======================== -->
+<section id="parte3">
+  <div class="section-sidebar">
+    <span class="section-number">Capitolo III</span>
+    <h2 class="section-title">Sacred<br>Curation</h2>
+    <p class="section-subtitle">Analisi filologica di nodi testuali e riverberi nell'ecosistema Fable.</p>
+  </div>
+  <div class="reveal">
+    
+    <div class="quote-card">
+      <p class="quote-text">«Si possono contare le lune che brillano sui suoi tetti, o i mille splendidi soli che si nascondono dietro i suoi muri.»</p>
+      <div class="quote-analysis">
+        <div class="analysis-col">
+          <h4>Ermeneutica del Testo</h4>
+          <p>La citazione evoca una sacralità poetica invisibile. Hosseini contrappone la distruzione materiale dell'ordigno bellico all'immortalità lirica della città ferita.</p>
+        </div>
+        <div class="analysis-col">
+          <h4>Impatto su Fable</h4>
+          <p>Questa stringa registra il più alto tasso di evidenziazione digitale, trasformandosi in manifesto estetico del club e punto di convergenza visuale immediata.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote-card">
+      <p class="quote-text">«Il matrimonio può attendere, l'educazione no. Perché una società non ha alcuna possibilità di successo se le sue donne non sono istruite.»</p>
+      <div class="quote-analysis">
+        <div class="analysis-col">
+          <h4>Ermeneutica del Testo</h4>
+          <p>Il lascito intellettuale di Babi a Laila rappresenta il fulcro ideologico e la resistenza epistemica contro l'oscurantismo confessionale.</p>
+        </div>
+        <div class="analysis-col">
+          <h4>Impatto su Fable</h4>
+          <p>Scatena dibattiti accesi e trasversali sulla bacheca asincrona, connettendosi a testimonianze reali di lettrici provenienti da aree geopolitiche marginalizzate.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ======================== PARTE IV ======================== -->
+<section id="parte4">
+  <div class="section-sidebar">
+    <span class="section-number">Capitolo IV</span>
+    <h2 class="section-title">Contaminazioni<br>Colte</h2>
+    <p class="section-subtitle">Oltre il perimetro del libro: ponti transdisciplinari d'eccellenza.</p>
+  </div>
+  <div class="reveal">
+    <p class="prose">
+      Per elevare lo studio a dignità propriamente accademica e rompere i confini dell'analisi didattica lineare, è imperativo operare delle interconnessioni teoriche complesse che espandano la percezione dell'opera.
+    </p>
+
+    <div class="connection-item">
+      <div class="connection-icon">🏛️</div>
+      <div>
+        <p class="connection-label">Filosofia Politica</p>
+        <h3 class="connection-title">Hannah Arendt & La Sfera Pubblica</h3>
+        <p class="connection-body">La sistematica reclusione domestica inflitta a Mariam e Laila rispecchia fedelmente l'annientamento della "sfera pubblica" descritto da Arendt nei regimi totalitari. Lo spazio digitale di Fable agisce così in modalità compensativa, configurandosi come contropubblico subalterno e virtuale in cui ricostruire quella cittadinanza negata dalla storia.</p>
+      </div>
+    </div>
+
+    <div class="connection-item">
+      <div class="connection-icon">🎨</div>
+      <div>
+        <p class="connection-label">Storia dell'Arte</p>
+        <h3 class="connection-title">Artemisia Gentileschi e la Catarsi Visiva</h3>
+        <p class="connection-body">La violenza iconografica e la furia redentrice presenti nei dipinti di Artemisia (es. <em>Giuditta che decapita Oloferne</em>) trovano un parallelo perfetto nell'atto estremo e sacrificale compiuto da Mariam contro Rasheed. Entrambe le espressioni artistiche canalizzano il trauma di abusi reali in una spietata giustizia estetica.</p>
+      </div>
+    </div>
+
+    <div class="connection-item">
+      <div class="connection-icon">📡</div>
+      <div>
+        <p class="connection-label">Attivismo Contemporaneo</p>
+        <h3 class="connection-title">Dal Romanzo ai Movimenti Digitali
